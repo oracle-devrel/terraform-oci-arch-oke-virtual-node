@@ -83,6 +83,8 @@ variable "oci_service_gateway" {
     uk-london-1 = "all-lhr-services-in-oracle-services-network"
     us-ashburn-1 = "all-iad-services-in-oracle-services-network"
     us-phoenix-1 = "all-phx-services-in-oracle-services-network"
+    us-sanjose-1 = "all-sjc-services-in-oracle-services-network"
+    us-us-chicago-1 = "all-ord-services-in-oracle-services-network"
   }
 }
 
