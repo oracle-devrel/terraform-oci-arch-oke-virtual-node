@@ -105,6 +105,7 @@ resource "oci_core_security_list" "kubernetes_api_endpoint_sec_list" {
 resource "oci_core_network_security_group" "pod_network_security_group" {
     #Required
     compartment_id = var.compartment_id
+	display_name = "pod_network_security_group"
     vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
 }
 
@@ -190,6 +191,7 @@ resource "oci_core_network_security_group_security_rule" "lb_network_pod_network
 resource "oci_core_network_security_group" "virtual_node_network_security_group" {
     #Required
     compartment_id = var.compartment_id
+	display_name = "Virtual_node_security_group"
     vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
 }
 
