@@ -207,7 +207,7 @@ resource "oci_core_network_security_group_security_rule" "virtual_node__network_
 
 # Security rules Pods to Virtual Node network ###################################################
 
-resource "oci_core_network_security_group_security_rule" "lb_network_pod_network" {
+resource "oci_core_network_security_group_security_rule" "pod_to_virtual_network" {
   network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
   description               = "allow TCP 10250 from Pod Network"
   direction                 = "INGRESS"
@@ -220,7 +220,7 @@ resource "oci_core_network_security_group_security_rule" "lb_network_pod_network
 
 # Security rules Kubernetes API subnet to Virtual Node network ###################################################
 
-resource "oci_core_network_security_group_security_rule" "lb_network_pod_network" {
+resource "oci_core_network_security_group_security_rule" "api_network_virtual_network" {
   network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
   description               = "allow TCP 10250 from Pod Network"
   direction                 = "INGRESS"
