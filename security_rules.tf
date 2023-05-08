@@ -37,96 +37,7 @@ resource "oci_core_security_list" "service_lb_sec_list" {
 
 }
 
-resource "oci_core_security_list" "node_sec_list" {
-	compartment_id = var.compartment_id
-	display_name = "oke-nodeseclist-quick-demo-cluster"
-	egress_security_rules {
-		description = "Allow pods on one worker node to communicate with pods on other worker nodes"
-		destination = "10.0.10.0/24"
-		destination_type = "CIDR_BLOCK"
-		protocol = "all"
-		stateless = "false"
-	}
-	egress_security_rules {
-		description = "Access to Kubernetes API Endpoint"
-		destination = "10.0.0.0/28"
-		destination_type = "CIDR_BLOCK"
-		protocol = "6"
-		stateless = "false"
-	}
-	egress_security_rules {
-		description = "Kubernetes worker to control plane communication"
-		destination = "10.0.0.0/28"
-		destination_type = "CIDR_BLOCK"
-		protocol = "6"
-		stateless = "false"
-	}
-	egress_security_rules {
-		description = "Path discovery"
-		destination = "10.0.0.0/28"
-		destination_type = "CIDR_BLOCK"
-		icmp_options {
-			code = "4"
-			type = "3"
-		}
-		protocol = "1"
-		stateless = "false"
-	}
-	egress_security_rules {
-		description = "Allow nodes to communicate with OKE to ensure correct start-up and continued functioning"
-		destination = var.oci_service_gateway[var.region]
-		destination_type = "SERVICE_CIDR_BLOCK"
-		protocol = "6"
-		stateless = "false"
-	}
-	egress_security_rules {
-		description = "ICMP Access from Kubernetes Control Plane"
-		destination = "0.0.0.0/0"
-		destination_type = "CIDR_BLOCK"
-		icmp_options {
-			code = "4"
-			type = "3"
-		}
-		protocol = "1"
-		stateless = "false"
-	}
-	egress_security_rules {
-		description = "Worker Nodes access to Internet"
-		destination = "0.0.0.0/0"
-		destination_type = "CIDR_BLOCK"
-		protocol = "all"
-		stateless = "false"
-	}
-	ingress_security_rules {
-		description = "Allow pods on one worker node to communicate with pods on other worker nodes"
-		protocol = "all"
-		source = "10.0.10.0/24"
-		stateless = "false"
-	}
-	ingress_security_rules {
-		description = "Path discovery"
-		icmp_options {
-			code = "4"
-			type = "3"
-		}
-		protocol = "1"
-		source = "10.0.0.0/28"
-		stateless = "false"
-	}
-	ingress_security_rules {
-		description = "TCP access from Kubernetes Control Plane"
-		protocol = "6"
-		source = "10.0.0.0/28"
-		stateless = "false"
-	}
-	ingress_security_rules {
-		description = "Inbound SSH traffic to worker nodes"
-		protocol = "6"
-		source = "0.0.0.0/0"
-		stateless = "false"
-	}
-	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
-}
+
 
 resource "oci_core_security_list" "kubernetes_api_endpoint_sec_list" {
 	compartment_id = var.compartment_id
@@ -233,15 +144,18 @@ resource "oci_core_network_security_group_security_rule" "svc_lb_pod_network_ing
   }
 }
 
+
+# Security rules Pod to Pod communication ###################################################
 resource "oci_core_network_security_group_security_rule" "api_network_pod_network" {
   network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
   description               = "allow all from Pod Network"
   direction                 = "INGRESS"
   protocol                  = "all"
-  source                    = oci_core_subnet.pod_subnet.cidr_block
-  source_type               = "CIDR_BLOCK"
+  source                    = oci_core_network_security_group.pod_network_security_group.id
+  source_type               = "NETWORK_SECURITY_GROUP"
   stateless                 = false
 }
+
 
 
 
@@ -270,4 +184,50 @@ resource "oci_core_network_security_group_security_rule" "lb_network_pod_network
   stateless                 = false
   }
 
+
+# Security Group for Virtual Node Network ###################################################
+
+resource "oci_core_network_security_group" "virtual_node_network_security_group" {
+    #Required
+    compartment_id = var.compartment_id
+    vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
+}
+
+# Security rule for Virtual Node Network Egress ###################################################
+resource "oci_core_network_security_group_security_rule" "virtual_node__network_egress" {
+  network_security_group_id = oci_core_network_security_group.virtual_nod_network_security_group.id
+  description               = "allow all outbound traffic"
+  direction                 = "EGRESS"
+  protocol                  = "all"
+  destination               = "0.0.0.0/0"
+  source_type               = "CIDR_BLOCK"
+  stateless                 = false
+  }
+
+
+# Security rules Pods to Virtual Node network ###################################################
+
+resource "oci_core_network_security_group_security_rule" "lb_network_pod_network" {
+  network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
+  description               = "allow TCP 10250 from Pod Network"
+  direction                 = "INGRESS"
+  protocol                  = "6"
+  source                    = oci_core_network_security_group.pod_network_security_group.id
+  source_type               = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+}
+
+# Security rules Kubernetes API subnet to Virtual Node network ###################################################
+
+resource "oci_core_network_security_group_security_rule" "lb_network_pod_network" {
+  network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
+  description               = "allow TCP 10250 from Pod Network"
+  direction                 = "INGRESS"
+  protocol                  = "6"
+  source                    = oci_core_subnet.kubernetes_api_endpoint_subnet.cidr_block
+  source_type               = "CIDR_BLOCK"
+  stateless                 = false
+
+}
 

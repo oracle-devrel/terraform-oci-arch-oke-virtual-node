@@ -103,11 +103,13 @@ resource "oci_containerengine_virtual_node_pool" "create_node_pool_details0" {
         
     }
 
-
+	 nsg_ids = oci_core_network_security_group.virtual_node_network_security_group.id
 	 pod_configuration {
         #Required
         shape = var.pod_shape
         subnet_id = "${oci_core_subnet.pod_subnet.id}"
+		nsg_ids = oci_core_network_security_group.pod_network_security_group.id
+
     }	
 
 	# number of Virtual Nodes
