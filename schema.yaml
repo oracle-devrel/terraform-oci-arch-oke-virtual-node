@@ -1,0 +1,119 @@
+title: "OKE Virtual Node Demo Stack"
+stackDescription: "OKE Virtual Node Stack"
+schemaVersion: 1.1.0
+version: "20200301"
+locale: “en"
+
+variableGroups:
+    - title: "OCI Inputs"
+      visible: 
+      variables:
+      - "compartment_id"
+      - "region"
+    - title: "OKE Inputs"
+      variables:
+      - "pod_shape"
+      - "virtual_node_count"
+      - "kubernetes_version"
+    - title: "OKE Add-ons"
+      variables:
+      - "deploy_metrics_server"
+      - "deploy_ingress_controller"
+    - title: "Policy Inputs"
+      variables:
+      - "create_IAM_policy "
+      - "root_compartment_id"
+variables:
+    "compartment_id":
+        type: oci:identity:compartment:id
+        visible: true
+        required: true
+        title: "Compartment"
+        description: "The compartment to create the resources in."
+    
+    "region":
+      type: oci:identity:region:name
+      visible: true
+      required: true
+      title: "Region"
+      description: "The region in which to create resources."
+
+    "virtual_node_count":
+      type: integer
+      visible: true
+      required: true
+      minimum: 1
+      maximum: 1000
+      title: "Number of Virtual Nodes"
+      description: "number of virtual  nodes"
+
+    "pod_shape":
+      type: enum
+      enum:
+      - "Pod.Standard.E4.Flex"
+      - "Pod.Standard.E3.Flex" 
+      visible: true
+      required: true
+      title: "Pod Shape"
+      description: "Shapes of Virtual Nodes"
+
+    "kubernetes_version":
+      type: enum
+      enum:
+      - "v1.26.2"
+      - "v1.25.4" 
+      visible: true
+      required: true
+      title: "Kubernetes Version"
+      description: "Version of Kubernetes"
+
+    "deploy_metrics_server":
+      type: boolean
+      visible: true
+      required: true
+      title: "Metrics Server"
+      description: "Choose to add Metrics Server to OKE cluster"
+
+    "deploy_kubernetes_dashboard":
+      type: boolean
+      visible: false
+      required: false
+      title: "Kubernetes Dashboard"
+      description: "Choose to add Metrics Server to OKE cluster"
+
+    "deploy_ingress_controller":
+      type: boolean
+      visible: true
+      required: true
+      title: "Ingress Controller"
+      description: "Choose to add Nginx Ingress to OKE cluster"
+
+    "create_IAM_policy":
+      type: boolean
+      visible: true
+      required: true
+      title: "IAM policy for Virtual Nodes"
+      description: "Choose to create policy for Virtial Node Operation"
+
+    "root_compartment_id":
+      type: oci:identity:compartment:id
+      visible: "create_IAM_policy"
+      required: false
+      title: "Root Compartment"
+      description: "Root Compartment"
+
+    "oci_service_gateway":
+      visible: false
+      required: false
+      title: "Service Gateway"
+      description: "Service gateway gateway"
+
+    "tenancy_ocid":
+      visible: false
+      required: true
+      type: oci:identity:tenancy
+      title: "Tenancy"
+      description: "Service gateway gateway"
+
+
+
