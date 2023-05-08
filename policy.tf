@@ -3,7 +3,7 @@
 resource "oci_identity_policy" "oke_virtual_node_policy" {
   count = var.create_IAM_policy  ? 1 : 0  
   provider = oci.home
-  compartment_id = var.root_compartment_id
+  compartment_id = var.tenancy_ocid
   name           = "oke_virtual_node_policy"
   description = "policy to allow Virtual Nodes to use COntianer Instances"
 

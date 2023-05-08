@@ -22,7 +22,6 @@ variableGroups:
     - title: "Policy Inputs"
       variables:
       - "create_IAM_policy "
-      - "root_compartment_id"
 variables:
     "compartment_id":
         type: oci:identity:compartment:id
@@ -95,12 +94,6 @@ variables:
       title: "IAM policy for Virtual Nodes"
       description: "Choose to create policy for Virtial Node Operation"
 
-    "root_compartment_id":
-      type: oci:identity:compartment:id
-      visible: "create_IAM_policy"
-      required: false
-      title: "Root Compartment"
-      description: "Root Compartment"
 
     "oci_service_gateway":
       visible: false
@@ -113,7 +106,7 @@ variables:
       required: true
       type: oci:identity:tenancy
       title: "Tenancy"
-      description: "Service gateway gateway"
+      description: "OCI Tenancy"
 
 
 
