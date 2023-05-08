@@ -64,7 +64,6 @@ resource "oci_core_subnet" "node_subnet" {
 	#dns_label = ""
 	prohibit_public_ip_on_vnic = "true"
 	route_table_id = "${oci_core_route_table.generated_oci_core_route_table.id}"
-	security_list_ids = ["${oci_core_security_list.node_sec_list.id}"]
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
 }
 
@@ -75,7 +74,6 @@ resource "oci_core_subnet" "pod_subnet" {
 	#dns_label = ""
 	prohibit_public_ip_on_vnic = "true"
 	route_table_id = "${oci_core_route_table.generated_oci_core_route_table.id}"
-	security_list_ids = ["${oci_core_security_list.node_sec_list.id}"]
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
 }
 

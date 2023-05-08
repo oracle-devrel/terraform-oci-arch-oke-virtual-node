@@ -195,7 +195,7 @@ resource "oci_core_network_security_group" "virtual_node_network_security_group"
 
 # Security rule for Virtual Node Network Egress ###################################################
 resource "oci_core_network_security_group_security_rule" "virtual_node__network_egress" {
-  network_security_group_id = oci_core_network_security_group.virtual_nod_network_security_group.id
+  network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
   description               = "allow all outbound traffic"
   direction                 = "EGRESS"
   protocol                  = "all"
