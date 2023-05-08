@@ -126,7 +126,7 @@ resource "oci_core_network_security_group_security_rule" "svc_network_pod_networ
   }
 }
 
-
+# Security rules Load Balancer to Pod communication ###################################################
 resource "oci_core_network_security_group_security_rule" "svc_lb_pod_network_ingress1" {
   network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
   description               = "allow TCP 10256"
