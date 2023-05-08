@@ -6,6 +6,7 @@
 
 This Terraform stack facilitates the deployment of an Oracle Container Engine for Kubernetes (OKE) Virtual Nodes cluster in your tenancy. This stack will automatically provision the necessary network infrastructure components such as Virtual Cloud Network (VCN), subnets, Internet Gateway, NAT Gateway, and security rules. Additionally, you can deploy the relevant policies in the root compartment of your tenancy to enable operations of OKE Virtual Nodes and also includes the option to deploy a metrics server, ingress controller and the Kubernetes dashboard to the cluster.
 
+
 ## Pre-requisites
 
 - [OCI CLI installed with the required credentials to deploy OKE in your tenancy](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm)
@@ -59,8 +60,7 @@ Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.
 | `region` | region to deploy the OKE Virtual Nodes Cluster  | string | yes     |
 | `pod_shape` | The shape of Virtual Nodes | string | yes       |
 | `virtual_node_count` | The number of Virtual Nodes in the node pool  | number | yes       |
-| `create_IAM_policy` | To create the policy for for Virtual Node operations. Set to "true" to create the policy | bool | yes       |
-| `root_compartment_id` | Root compartment to deploy OKE Virtual Nodes policy | string | yes if  `create_IAM_policy` is set to true |
+| `create_IAM_policy` | To create the policy for for Virtual Node operations. Set to "true" to create the policy. The IAM polciy is created in the root compartment in customer's home tenancy. Customer must have access to create a polciy in this tenancy.| bool | yes       |
 | `deploy_metrics_server` | install metrics server. Set to "true" to create the policy | bool | yes  |
 | `deploy_kubernetes_dashboard` | install Kubernetes dashboard. Set to "true" to create the policy | bool | yes  |
 | `deploy_ingress_controller` | install ingnx ingress controller. Set to "true" to create the policy | bool | yes  |
