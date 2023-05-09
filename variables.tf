@@ -41,13 +41,6 @@ variable "create_IAM_policy" {
   default     = false
 }
 
-# root compartment of tenancy to create ske policy for Virtual Nodes if "create_oke_virtual_node_policy" varaiable is set to true
-variable "root_compartment_id" {
-    type = string
-    default = "ocid1.compartment.oc1..aaaaaaaatsicihq6k7nqthosj3ed3vw6mimftezmxxlf2cngre726enzxsla"
-}
-
-
 # set to true to add metrics server to Virtual Nodes
 variable "deploy_metrics_server" {
   description = "Set to true to create the resource, false to skip it."

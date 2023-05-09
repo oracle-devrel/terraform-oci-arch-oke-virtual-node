@@ -6,6 +6,7 @@
 
 This Terraform stack facilitates the deployment of an Oracle Container Engine for Kubernetes (OKE) Virtual Nodes cluster in your tenancy. This stack will automatically provision the necessary network infrastructure components such as Virtual Cloud Network (VCN), subnets, Internet Gateway, NAT Gateway, and security rules. Additionally, you can deploy the relevant policies in the root compartment of your tenancy to enable operations of OKE Virtual Nodes and also includes the option to deploy a metrics server, ingress controller and the Kubernetes dashboard to the cluster.
 
+
 ## Pre-requisites
 
 - [OCI CLI installed with the required credentials to deploy OKE in your tenancy](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm)
@@ -13,7 +14,7 @@ This Terraform stack facilitates the deployment of an Oracle Container Engine fo
 - [Terraform Installed](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
 
-Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?region=home&zipUrl=https://github.com/chiphwang1/oci_oke_virtuaal_nodes/archive/refs/tags/v6.zip)
+Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?region=home&zipUrl=https://github.com/chiphwang1/terraform-oci-arch-oke-virtual-node/archive/refs/tags/v2.zip)
 
 ## Installation of Terraform stack
 
@@ -55,12 +56,11 @@ Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.
 | Variables                          | Description                                                         | Type   | Mandatory |
 | ---------------------------------- | ------------------------------------------------------------------- | ------ | --------- |
 | `compartment_id` | Compartment to deploy OKE Virtual Nodes cluster | string | yes  |
-| `tenancy_ocid` | Tenancy ocid| string | yes  |
+| `tenancy_ocid` | Customer's tenancy ocid| string | yes  |
 | `region` | region to deploy the OKE Virtual Nodes Cluster  | string | yes     |
 | `pod_shape` | The shape of Virtual Nodes | string | yes       |
 | `virtual_node_count` | The number of Virtual Nodes in the node pool  | number | yes       |
-| `create_IAM_policy` | To create the policy for for Virtual Node operations. Set to "true" to create the policy | bool | yes       |
-| `root_compartment_id` | Root compartment to deploy OKE Virtual Nodes policy | string | yes if  `create_IAM_policy` is set to true |
+| `create_IAM_policy` | To create the policy for for Virtual Node operations set to "true". The IAM policy is created in the root compartment in customer's home region. Customer must have access to create a policy in this compartment.| bool | yes       |
 | `deploy_metrics_server` | install metrics server. Set to "true" to create the policy | bool | yes  |
 | `deploy_kubernetes_dashboard` | install Kubernetes dashboard. Set to "true" to create the policy | bool | yes  |
 | `deploy_ingress_controller` | install ingnx ingress controller. Set to "true" to create the policy | bool | yes  |
