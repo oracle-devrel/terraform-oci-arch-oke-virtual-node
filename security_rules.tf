@@ -1,12 +1,12 @@
 resource "oci_core_security_list" "service_lb_sec_list" {
 	compartment_id = var.compartment_id
-	display_name = "oke-svclbseclist-quick-demo-cluster"
+	display_name = "oke-svclbseclist-cluster"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
     
 	egress_security_rules {
 		description = "Access to all"
-		destination = "0.0.0.0/0"
-		destination_type = "CIDR_BLOCK"
+		destination = oci_core_network_security_group.pod_network_security_group.id
+		destination_type = "NETWORK_SECURITY_GROUP"
 		protocol = "all"
 		stateless = "false"
 	}
@@ -39,64 +39,7 @@ resource "oci_core_security_list" "service_lb_sec_list" {
 
 
 
-resource "oci_core_security_list" "kubernetes_api_endpoint_sec_list" {
-	compartment_id = var.compartment_id
-	display_name = "oke-k8sApiEndpoint-quick-demo-cluster"
-	egress_security_rules {
-		description = "Allow Kubernetes Control Plane to communicate with OKE"
-		destination = var.oci_service_gateway[var.region]
-		destination_type = "SERVICE_CIDR_BLOCK"
-		protocol = "6"
-		stateless = "false"
-	}
-	egress_security_rules {
-		description = "All traffic to worker nodes"
-		destination = "10.0.10.0/24"
-		destination_type = "CIDR_BLOCK"
-		protocol = "6"
-		stateless = "false"
-	}
-	egress_security_rules {
-		description = "Path discovery"
-		destination = "10.0.10.0/24"
-		destination_type = "CIDR_BLOCK"
-		icmp_options {
-			code = "4"
-			type = "3"
-		}
-		protocol = "1"
-		stateless = "false"
-	}
-	ingress_security_rules {
-		description = "External access to Kubernetes API endpoint"
-		protocol = "6"
-		source = "0.0.0.0/0"
-		stateless = "false"
-	}
-	ingress_security_rules {
-		description = "Kubernetes worker to Kubernetes API endpoint communication"
-		protocol = "6"
-		source = "10.0.10.0/24"
-		stateless = "false"
-	}
-	ingress_security_rules {
-		description = "Kubernetes worker to control plane communication"
-		protocol = "6"
-		source = "10.0.10.0/24"
-		stateless = "false"
-	}
-	ingress_security_rules {
-		description = "Path discovery"
-		icmp_options {
-			code = "4"
-			type = "3"
-		}
-		protocol = "1"
-		source = "10.0.10.0/24"
-		stateless = "false"
-	}
-	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
-}
+
 
 
 
@@ -127,7 +70,7 @@ resource "oci_core_network_security_group_security_rule" "svc_network_pod_networ
   }
 }
 
-# Security rules Load Balancer to Pod communication ###################################################
+# Security rules Load Balancer to Pod communication
 resource "oci_core_network_security_group_security_rule" "svc_lb_pod_network_ingress1" {
   network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
   description               = "allow TCP 10256"
@@ -146,7 +89,7 @@ resource "oci_core_network_security_group_security_rule" "svc_lb_pod_network_ing
 }
 
 
-# Security rules Pod to Pod communication ###################################################
+# Security rules Pod to Pod communication
 resource "oci_core_network_security_group_security_rule" "api_network_pod_network" {
   network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
   description               = "allow all from Pod Network"
@@ -160,20 +103,20 @@ resource "oci_core_network_security_group_security_rule" "api_network_pod_networ
 
 
 
-# Security rules API to Pod network ###################################################
+# Security rules API to Pod network
 
 resource "oci_core_network_security_group_security_rule" "lb_network_pod_network" {
   network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
   description               = "allow all from Kubernetes API"
   direction                 = "INGRESS"
   protocol                  = "all"
-  source                    = oci_core_subnet.kubernetes_api_endpoint_subnet.cidr_block
-  source_type               = "CIDR_BLOCK"
+  source                    = oci_core_network_security_group.KubeAPI_server_security_group.id
+  source_type               = "NETWORK_SECURITY_GROUP"
   stateless                 = false
 
 }
 
-# Security rules Pod network Egress ###################################################
+# Security rules Pod network Egress
 
   resource "oci_core_network_security_group_security_rule" "pod_network_egress" {
   network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
@@ -195,7 +138,7 @@ resource "oci_core_network_security_group" "virtual_node_network_security_group"
     vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
 }
 
-# Security rule for Virtual Node Network Egress ###################################################
+# Security rule for Virtual Node Network Egress
 resource "oci_core_network_security_group_security_rule" "virtual_node__network_egress" {
   network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
   description               = "allow all outbound traffic"
@@ -207,10 +150,10 @@ resource "oci_core_network_security_group_security_rule" "virtual_node__network_
   }
 
 
-# Security rules Pods to Virtual Node network ###################################################
+# Security rules Pods to Virtual Node network TCP 10250
 
-resource "oci_core_network_security_group_security_rule" "pod_to_virtual_network" {
-  network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
+resource "oci_core_network_security_group_security_rule" "pod_to_virtual_network1" {
+  network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
   description               = "allow TCP 10250 from Pod Network"
   direction                 = "INGRESS"
   protocol                  = "6"
@@ -218,18 +161,178 @@ resource "oci_core_network_security_group_security_rule" "pod_to_virtual_network
   source_type               = "NETWORK_SECURITY_GROUP"
   stateless                 = false
 
+
+tcp_options {
+
+        destination_port_range {
+            max = "10250"
+            min = "10250"
+        }
+
 }
 
-# Security rules Kubernetes API subnet to Virtual Node network ###################################################
+# Security rules Kubernetes API subnet to Virtual Node network TCP 10250
 
-resource "oci_core_network_security_group_security_rule" "api_network_virtual_network" {
-  network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
+resource "oci_core_network_security_group_security_rule" "api_network_virtual_network1" {
+  network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
   description               = "allow TCP 10250 from Pod Network"
   direction                 = "INGRESS"
   protocol                  = "6"
-  source                    = oci_core_subnet.kubernetes_api_endpoint_subnet.cidr_block
+  source                    = oci_core_network_security_group.KubeAPI_server_security_group.id
+  source_type               = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+tcp_options {
+
+        destination_port_range {
+            max = "10250"
+            min = "10250"
+        }
+
+}
+
+resource "oci_core_network_security_group_security_rule" "api_network_virtual_network_icmp" {
+  network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
+  description               = "allow icmp from kube API Network"
+  direction                 = "INGRESS"
+  protocol                  = "1"
+  source                    = oci_core_network_security_group.KubeAPI_server_security_group.id
+  source_type               = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+
+}
+
+
+
+# Security Group Kubernetes API Server ###################################################
+
+resource "oci_core_network_security_group" "KubeAPI_server_security_group" {
+    #Required
+    compartment_id = var.compartment_id
+	display_name = "kubeAPI_Server_security_group"
+    vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
+}
+
+# Security rules kubeAPI server ingress TCP 6443
+
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress_TCP_6443" {
+  network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
+  description               = "allow KubeAPI ingress TCP 6443"
+  direction                 = "INGRESS"
+  protocol                  = "6"
+  source                    = "0.0.0.0/0"
   source_type               = "CIDR_BLOCK"
+  stateless                 = false
+
+   tcp_options {
+
+        destination_port_range {
+            max = "6443"
+            min = "6443"
+        }
+
+}
+
+# Security rules kubeAPI server ingress TCP 6443 from pod security group
+
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress_TCP_6443_pod" {
+  network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
+  description               = "allow KubeAPI ingress TCP 6443"
+  direction                 = "INGRESS"
+  protocol                  = "6"
+  source                    = oci_core_network_security_group.pod_network_security_group.id
+  source_type               = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+   tcp_options {
+
+        destination_port_range {
+            max = "6443"
+            min = "6443"
+        }
+
+}
+
+
+# Security rules kubeAPI server ingress TCP 6443 from node security group
+
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress_TCP_6443_node" {
+  network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
+  description               = "allow KubeAPI ingress TCP 6443"
+  direction                 = "INGRESS"
+  protocol                  = "6"
+  source                    = oci_core_network_security_group.virtual_node_network_security_group.id
+  source_type               = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+   tcp_options {
+
+        destination_port_range {
+            max = "6443"
+            min = "6443"
+        }
+
+}
+
+
+
+# Security rules kubeAPI server ingress from pod security group TCP 12250
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_pod_12250" {
+  network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
+  description               = "allow pod security group TCP 12250"
+  direction                 = "INGRESS"
+  protocol                  = "6"
+  source                    = oci_core_network_security_group.pod_network_security_group.id
+  source_type               = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+   tcp_options {
+        destination_port_range {
+            max = "12250"
+            min = "12250"
+        }
+
+}
+
+# Security rules kubeAPI server ingress from node security group TCP 
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12250" {
+  network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
+  description               = "allow node security group TCP 12250"
+  direction                 = "INGRESS"
+  protocol                  = "6"
+  source                    = oci_core_network_security_group.virtual_node_network_security_group.id
+  source_type               = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+   tcp_options {
+        destination_port_range {
+            max = "12250"
+            min = "12250"
+        }
+
+}
+
+# Security rules kubeAPI server ingress from node security group ICMP
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12250" {
+  network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
+  description               = "allow node security group ICMP"
+  direction                 = "INGRESS"
+  protocol                  = "1"
+  source                    = oci_core_network_security_group.pod_network_security_group.id
+  source_type               = "NETWORK_SECURITY_GROUP"
   stateless                 = false
 
 }
 
+# Security rules kubeAPI server ingress from node security group ICMP
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12250" {
+  network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
+  description               = "allow pod security group ICMP"
+  direction                 = "INGRESS"
+  protocol                  = "1"
+  source                    = oci_core_network_security_group.virtual_node_network.id
+  source_type               = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+}

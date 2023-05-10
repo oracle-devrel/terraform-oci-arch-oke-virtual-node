@@ -58,22 +58,22 @@ resource "oci_containerengine_cluster" "generated_oci_containerengine_cluster" {
 		subnet_id = "${oci_core_subnet.kubernetes_api_endpoint_subnet.id}"
 	}
 	freeform_tags = {
-		"OKEclusterName" = "demo-cluster"
+		"OKEclusterName" = "oke-cluster"
 	}
 	kubernetes_version = var.kubernetes_version
-	name = "demo-cluster"
+	name = "oke-cluster"
 	options {
 		admission_controller_options {
 			is_pod_security_policy_enabled = "false"
 		}
 		persistent_volume_config {
 			freeform_tags = {
-				"OKEclusterName" = "demo-cluster"
+				"OKEclusterName" = "oke-cluster"
 			}
 		}
 		service_lb_config {
 			freeform_tags = {
-				"OKEclusterName" = "demo-cluster"
+				"OKEclusterName" = "oke-cluster"
 			}
 		}
 		service_lb_subnet_ids = ["${oci_core_subnet.service_lb_subnet.id}"]
@@ -115,7 +115,7 @@ resource "oci_containerengine_virtual_node_pool" "create_node_pool_details0" {
 
 	# number of Virtual Nodes
 	size = var.virtual_node_count
-	display_name = "Virtual_demo"
+	display_name = "Oke_virtual_node"
 	
 	
 	
