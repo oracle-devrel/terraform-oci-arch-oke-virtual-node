@@ -274,7 +274,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
         }
 
 }
-
+}
 
 
 # Security rules kubeAPI server ingress from pod security group TCP 12250
@@ -293,6 +293,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_pod_122
             min = "12250"
         }
 
+}
 }
 
 # Security rules kubeAPI server ingress from node security group TCP 
@@ -313,8 +314,10 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12
 
 }
 
+}
+
 # Security rules kubeAPI server ingress from node security group ICMP
-resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12250" {
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12250_icmp_node" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
   description               = "allow node security group ICMP"
   direction                 = "INGRESS"
@@ -326,7 +329,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12
 }
 
 # Security rules kubeAPI server ingress from node security group ICMP
-resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12250" {
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12250_icmp_pod" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
   description               = "allow pod security group ICMP"
   direction                 = "INGRESS"
