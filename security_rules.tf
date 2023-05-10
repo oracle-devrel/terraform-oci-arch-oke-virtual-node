@@ -336,7 +336,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12
   description               = "allow pod security group ICMP"
   direction                 = "INGRESS"
   protocol                  = "1"
-  source                    = oci_core_network_security_group.virtual_node_network.id
+  source                    = oci_core_network_security_group.virtual_node_network_security_group.id
   source_type               = "NETWORK_SECURITY_GROUP"
   stateless                 = false
 
