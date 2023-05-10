@@ -169,8 +169,8 @@ tcp_options {
             min = "10250"
         }
 
+	}
 }
-
 # Security rules Kubernetes API subnet to Virtual Node network TCP 10250
 
 resource "oci_core_network_security_group_security_rule" "api_network_virtual_network1" {
@@ -189,6 +189,7 @@ tcp_options {
             min = "10250"
         }
 
+	}
 }
 
 resource "oci_core_network_security_group_security_rule" "api_network_virtual_network_icmp" {
@@ -232,7 +233,8 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
             min = "6443"
         }
 
-}
+	}
+}	
 
 # Security rules kubeAPI server ingress TCP 6443 from pod security group
 
@@ -252,8 +254,8 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
             min = "6443"
         }
 
+	}
 }
-
 
 # Security rules kubeAPI server ingress TCP 6443 from node security group
 
@@ -273,7 +275,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
             min = "6443"
         }
 
-}
+	}
 }
 
 
@@ -293,7 +295,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_pod_122
             min = "12250"
         }
 
-}
+	}
 }
 
 # Security rules kubeAPI server ingress from node security group TCP 
