@@ -56,6 +56,7 @@ resource "oci_containerengine_cluster" "generated_oci_containerengine_cluster" {
 	endpoint_config {
 		is_public_ip_enabled = "true"
 		subnet_id = "${oci_core_subnet.kubernetes_api_endpoint_subnet.id}"
+		nsg_ids = [oci_core_network_security_group.KubeAPI_server_security_group.id]
 	}
 	freeform_tags = {
 		"OKEclusterName" = "oke-cluster"
