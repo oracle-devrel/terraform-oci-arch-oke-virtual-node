@@ -56,7 +56,7 @@ Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.
 | Variables                          | Description                                                         | Type   | Mandatory |
 | ---------------------------------- | ------------------------------------------------------------------- | ------ | --------- |
 | `compartment_id` | Compartment to deploy OKE Virtual Nodes cluster | string | yes  |
-| `tenancy_ocid` | Customer's tenancy ocid| string | yes  |
+| `tenancy_ocid` | Tenancy ocid| string | yes  |
 | `region` | region to deploy the OKE Virtual Nodes Cluster  | string | yes     |
 | `pod_shape` | The shape of Virtual Nodes | string | yes       |
 | `virtual_node_count` | The number of Virtual Nodes in the node pool  | number | yes       |

@@ -466,3 +466,33 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_Node_10
 	}
 }
 
+# Security Group Kubernetes Ingress Controller  ###################################################
+
+resource "oci_core_network_security_group" "ingress_controller" {
+    #Required
+    compartment_id = var.compartment_id
+	display_name = "Ingress_controller_security_group"
+    vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
+}
+
+
+# Security rules ingress controller to pod nETWORK
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_Node_10250" {
+  network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
+  description               = "allow 10250 to Node Network"
+  direction                 = "EGRESS"
+  protocol                  = "6"
+  destination               = oci_core_network_security_group.virtual_node_network_security_group.id
+  destination_type          = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+  tcp_options {
+    destination_port_range {
+      min = "30000"
+      max = "32767"
+    }
+  }
+}	
+
+
+}
