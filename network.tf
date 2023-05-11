@@ -3,7 +3,6 @@ resource "oci_core_vcn" "generated_oci_core_vcn" {
 	cidr_block = "10.0.0.0/16"
 	compartment_id = var.compartment_id
 	display_name = "oke-vcn-cluster"
-	#dns_label = "democluster"
 }
 
 resource "oci_core_internet_gateway" "generated_oci_core_internet_gateway" {
@@ -49,8 +48,8 @@ resource "oci_core_route_table" "generated_oci_core_route_table" {
 resource "oci_core_subnet" "service_lb_subnet" {
 	cidr_block = "10.0.20.0/24"
 	compartment_id = var.compartment_id
-	display_name = "oke-svclbsubnet-cluster-regional"
-	dns_label = ""
+	display_name = "oke-svclb-subnet"
+	#dns_label = "oke-svclb-subnet"
 	prohibit_public_ip_on_vnic = "true"
 	route_table_id = "${oci_core_default_route_table.generated_oci_core_default_route_table.id}"
 	security_list_ids = ["${oci_core_vcn.generated_oci_core_vcn.default_security_list_id}"]
@@ -60,7 +59,7 @@ resource "oci_core_subnet" "service_lb_subnet" {
 resource "oci_core_subnet" "node_subnet" {
 	cidr_block = "10.0.10.0/24"
 	compartment_id = var.compartment_id
-	display_name = "oke-nodesubnet-node"
+	display_name = "oke-node-subnet"
 	#dns_label = ""
 	prohibit_public_ip_on_vnic = "true"
 	route_table_id = "${oci_core_route_table.generated_oci_core_route_table.id}"
@@ -70,7 +69,7 @@ resource "oci_core_subnet" "node_subnet" {
 resource "oci_core_subnet" "pod_subnet" {
 	cidr_block = "10.0.11.0/24"
 	compartment_id = var.compartment_id
-	display_name = "oke-nodesubnet-pod"
+	display_name = "oke-pod-subnet"
 	#dns_label = ""
 	prohibit_public_ip_on_vnic = "true"
 	route_table_id = "${oci_core_route_table.generated_oci_core_route_table.id}"
@@ -81,7 +80,7 @@ resource "oci_core_subnet" "pod_subnet" {
 resource "oci_core_subnet" "kubernetes_api_endpoint_subnet" {
 	cidr_block = "10.0.0.0/28"
 	compartment_id = var.compartment_id
-	display_name = "oke-k8sApiEndpoint-subnet-cluster-regional"
+	display_name = "oke-k8sApi-server-subnet"
 	prohibit_public_ip_on_vnic = "false"
 	route_table_id = "${oci_core_default_route_table.generated_oci_core_default_route_table.id}"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"

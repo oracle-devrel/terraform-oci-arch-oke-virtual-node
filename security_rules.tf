@@ -4,11 +4,30 @@ resource "oci_core_security_list" "service_lb_sec_list" {
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
     
 	egress_security_rules {
-		description = "Access to all"
-		destination = oci_core_network_security_group.pod_network_security_group.id
-		destination_type = "NETWORK_SECURITY_GROUP"
-		protocol = "all"
+		description = "Access to pod network high ports"
+		destination = oci_core_subnet.pod_subnet.cidr_block 
+		destination_type = "CIDR_BLOCK"
+		protocol = "6"
 		stateless = "false"
+		tcp_options {
+		  min = 30000
+          max = 32767
+		}
+	
+	}
+
+
+	egress_security_rules {
+		description = "Access to pod network tcp 10256"
+		destination = oci_core_subnet.pod_subnet.cidr_block 
+		destination_type = "CIDR_BLOCK"
+		protocol = "6"
+		stateless = "false"
+		tcp_options {
+		  min = 10256
+          max = 10256
+		}
+	
 	}
 
 	ingress_security_rules {
@@ -22,6 +41,7 @@ resource "oci_core_security_list" "service_lb_sec_list" {
           max = 80
 		}
 	}
+
 
 	ingress_security_rules {
 		description = "Access to 443"
@@ -65,7 +85,7 @@ resource "oci_core_network_security_group_security_rule" "svc_network_pod_networ
   tcp_options {
     destination_port_range {
       min = "30000"
-      max = "30256"
+      max = "32767"
     }
   }
 }
@@ -129,6 +149,9 @@ resource "oci_core_network_security_group_security_rule" "lb_network_pod_network
   }
 
 
+
+
+
 # Security Group for Virtual Node Network ###################################################
 
 resource "oci_core_network_security_group" "virtual_node_network_security_group" {
@@ -139,6 +162,8 @@ resource "oci_core_network_security_group" "virtual_node_network_security_group"
 }
 
 # Security rule for Virtual Node Network Egress
+
+/*
 resource "oci_core_network_security_group_security_rule" "virtual_node__network_egress" {
   network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
   description               = "allow all outbound traffic"
@@ -147,6 +172,73 @@ resource "oci_core_network_security_group_security_rule" "virtual_node__network_
   destination               = "0.0.0.0/0"
   source_type               = "CIDR_BLOCK"
   stateless                 = false
+  }
+*/
+
+
+resource "oci_core_network_security_group_security_rule" "virtual_node__network_egress_api_server1" {
+  network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
+  description               = "allow api server TCP 6443"
+  direction                 = "EGRESS"
+  protocol                  = "6"
+  destination               = oci_core_network_security_group.KubeAPI_server_security_group.id
+  destination_type          = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+	tcp_options {
+
+        destination_port_range {
+            max = "6443"
+            min = "6443"
+        }
+
+	}
+
+  }
+
+
+resource "oci_core_network_security_group_security_rule" "virtual_node__network_egress_api_server2" {
+  network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
+  description               = "allow egress api server TCP 12250"
+  direction                 = "EGRESS"
+  protocol                  = "6"
+  destination               = oci_core_network_security_group.KubeAPI_server_security_group.id
+  destination_type          = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+	tcp_options {
+
+        destination_port_range {
+            max = "12250"
+            min = "12250"
+        }
+
+	}
+
+  }
+
+
+resource "oci_core_network_security_group_security_rule" "OCI_Services" {
+  network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
+  description               = "allow to OCI services"
+  direction                 = "EGRESS"
+  protocol                  = "all"
+  destination_type          = "SERVICE_CIDR_BLOCK"
+  destination 				=  lookup(data.oci_core_services.all_oci_services.services[0], "cidr_block") 
+  stateless                 = false
+  }
+
+
+
+resource "oci_core_network_security_group_security_rule" "virtual_node__network_egress_api_server3" {
+  network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
+  description               = "allow api server ICMP"
+  direction                 = "EGRESS"
+  protocol                  = "1"
+  destination               = oci_core_network_security_group.KubeAPI_server_security_group.id
+  destination_type          = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
   }
 
 
@@ -203,8 +295,6 @@ resource "oci_core_network_security_group_security_rule" "api_network_virtual_ne
 
 
 }
-
-
 
 # Security Group Kubernetes API Server ###################################################
 
@@ -314,7 +404,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12
             min = "12250"
         }
 
-}
+	}
 
 }
 
@@ -324,20 +414,55 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12
   description               = "allow node security group ICMP"
   direction                 = "INGRESS"
   protocol                  = "1"
-  source                    = oci_core_network_security_group.pod_network_security_group.id
+  source                    = oci_core_network_security_group.virtual_node_network_security_group.id
   source_type               = "NETWORK_SECURITY_GROUP"
   stateless                 = false
 
 }
 
 # Security rules kubeAPI server ingress from node security group ICMP
-resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12250_icmp_pod" {
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_pod_12250_icmp_pod" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
   description               = "allow pod security group ICMP"
   direction                 = "INGRESS"
   protocol                  = "1"
-  source                    = oci_core_network_security_group.virtual_node_network_security_group.id
-  source_type               = "NETWORK_SECURITY_GROUP"
+  source                    = oci_core_network_security_group.pod_network_security_group.id
+  source_type          		= "NETWORK_SECURITY_GROUP"
   stateless                 = false
 
 }
+
+
+# Security rules kubeAPI server TO POD NETWORK
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_POD_ALL" {
+  network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
+  description               = "allow all to POD Network"
+  direction                 = "EGRESS"
+  protocol                  = "6"
+  destination               = oci_core_network_security_group.pod_network_security_group.id
+  destination_type           = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+
+}
+
+# Security rules kubeAPI server TO Node NETWORK
+resource "oci_core_network_security_group_security_rule" "kubeAPI_server_Node_10250" {
+  network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
+  description               = "allow 10250 to Node Network"
+  direction                 = "EGRESS"
+  protocol                  = "6"
+  destination               = oci_core_network_security_group.virtual_node_network_security_group.id
+  destination_type          = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
+
+
+ tcp_options {
+        destination_port_range {
+            max = "10250"
+            min = "10250"
+        }
+
+	}
+}
+

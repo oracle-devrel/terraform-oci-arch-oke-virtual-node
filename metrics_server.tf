@@ -17,7 +17,7 @@ resource "null_resource" "create_metrics_server" {
   provisioner "local-exec" {
     command = "kubectl --kubeconfig /tmp/kubeconfig create -f https://raw.githubusercontent.com/oracle-devrel/oci-oke-virtual-nodes/main/metrics-server/components.yml" 
 
-}
+  }
 
 }
 

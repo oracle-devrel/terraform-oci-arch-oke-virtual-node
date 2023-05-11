@@ -62,7 +62,7 @@ resource "oci_containerengine_cluster" "generated_oci_containerengine_cluster" {
 		"OKEclusterName" = "oke-cluster"
 	}
 	kubernetes_version = var.kubernetes_version
-	name = "oke-cluster"
+	name = "oke-cluster-virtual-nodes"
 	options {
 		admission_controller_options {
 			is_pod_security_policy_enabled = "false"

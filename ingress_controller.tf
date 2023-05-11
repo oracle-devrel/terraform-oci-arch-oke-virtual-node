@@ -20,7 +20,7 @@ resource "null_resource" "create_ingress_controller" {
   provisioner "local-exec" {
     command = "kubectl --kubeconfig /tmp/kubeconfig create -f https://raw.githubusercontent.com/oracle-devrel/oci-oke-virtual-nodes/main/ingress-nginx/deploy.yaml" 
 
-}
+  }
 
 }
 
