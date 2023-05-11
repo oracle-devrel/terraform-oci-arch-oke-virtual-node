@@ -75,7 +75,7 @@ Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.
 
 **1. Get IP address of Nginx ingress controller**
 
-     kubectl -n default get svc ingress-nginx
+     kubectl -n ingress-nginx get svc ingress-nginx-controller
 
 ## Additional Resources
 
