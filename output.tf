@@ -19,5 +19,5 @@ output "kube_config" {
 }
 
 output "ingress_controller_ip_address" {
-  value = "kubectl -n default get svc ingress-nginx"
+  value = "kubectl -n ingress-nginx get svc ingress-nginx-controller"
 }

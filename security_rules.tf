@@ -1,65 +1,3 @@
-resource "oci_core_security_list" "service_lb_sec_list" {
-	compartment_id = var.compartment_id
-	display_name = "oke-svclbseclist-cluster"
-	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
-    
-	egress_security_rules {
-		description = "Access to pod network high ports"
-		destination = oci_core_subnet.pod_subnet.cidr_block 
-		destination_type = "CIDR_BLOCK"
-		protocol = "6"
-		stateless = "false"
-		tcp_options {
-		  min = 30000
-          max = 32767
-		}
-	
-	}
-
-
-	egress_security_rules {
-		description = "Access to pod network tcp 10256"
-		destination = oci_core_subnet.pod_subnet.cidr_block 
-		destination_type = "CIDR_BLOCK"
-		protocol = "6"
-		stateless = "false"
-		tcp_options {
-		  min = 10256
-          max = 10256
-		}
-	
-	}
-
-	ingress_security_rules {
-		description = "Access to 80"
-		source_type = "CIDR_BLOCK"
-		source = "0.0.0.0/0"
-		protocol = "6"
-		stateless = "false"
-		tcp_options {
-		  min = 80
-          max = 80
-		}
-	}
-
-
-	ingress_security_rules {
-		description = "Access to 443"
-		protocol = "6"
-		source_type = "CIDR_BLOCK"
-		source = "0.0.0.0/0"
-		stateless = "false"
-		tcp_options {
-		  min = 443
-          max = 443
-		}
-	}
-
-}
-
-
-
-
 
 
 
@@ -78,8 +16,8 @@ resource "oci_core_network_security_group_security_rule" "svc_network_pod_networ
   description               = "allow Highport Access"
   direction                 = "INGRESS"
   protocol                  = "6"
-  source                    =  oci_core_subnet.service_lb_subnet.cidr_block 
-  source_type               = "CIDR_BLOCK"
+  source                    =  oci_core_network_security_group.ingress_controller.id
+  source_type               = "NETWORK_SECURITY_GROUP"
   stateless                 = false
 
   tcp_options {
@@ -96,8 +34,8 @@ resource "oci_core_network_security_group_security_rule" "svc_lb_pod_network_ing
   description               = "allow TCP 10256"
   direction                 = "INGRESS"
   protocol                  = "6"
-  source                    = oci_core_subnet.service_lb_subnet.cidr_block
-  source_type               = "CIDR_BLOCK"
+  source                    = oci_core_network_security_group.ingress_controller.id
+  source_type               = "NETWORK_SECURITY_GROUP"
   stateless                 = false
 
   tcp_options {
@@ -135,6 +73,10 @@ resource "oci_core_network_security_group_security_rule" "lb_network_pod_network
   stateless                 = false
 
 }
+
+
+
+
 
 # Security rules Pod network Egress
 
@@ -476,13 +418,13 @@ resource "oci_core_network_security_group" "ingress_controller" {
 }
 
 
-# Security rules ingress controller to pod nETWORK
-resource "oci_core_network_security_group_security_rule" "kubeAPI_server_Node_10250" {
-  network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
+# Security rules ingress controller to pod network high ports
+resource "oci_core_network_security_group_security_rule" "ingress_to_pod1" {
+  network_security_group_id = oci_core_network_security_group.ingress_controller.id
   description               = "allow 10250 to Node Network"
   direction                 = "EGRESS"
   protocol                  = "6"
-  destination               = oci_core_network_security_group.virtual_node_network_security_group.id
+  destination               = oci_core_network_security_group.pod_network_security_group.id
   destination_type          = "NETWORK_SECURITY_GROUP"
   stateless                 = false
 
@@ -494,5 +436,58 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_Node_10
   }
 }	
 
+# Security rules ingress controller to pod network TCP 
+resource "oci_core_network_security_group_security_rule" "ingress_to_pod2" {
+  network_security_group_id = oci_core_network_security_group.ingress_controller.id
+  description               = "allow 10256 to Node Network"
+  direction                 = "EGRESS"
+  protocol                  = "6"
+  destination               = oci_core_network_security_group.pod_network_security_group.id
+  destination_type          = "NETWORK_SECURITY_GROUP"
+  stateless                 = false
 
-}
+  tcp_options {
+    destination_port_range {
+      min = "10256"
+      max = "10256"
+    }
+  }
+}	
+
+
+# Security rules allow TCP 80 ingress controller to pod network TCP 
+resource "oci_core_network_security_group_security_rule" "TCP80_ingress" {
+  network_security_group_id = oci_core_network_security_group.ingress_controller.id
+  description               = "allow TCP 80 to Ingress"
+  direction                 = "INGRESS"
+  protocol                  = "6"
+  source                    = "0.0.0.0/0"
+  source_type               = "CIDR_BLOCK"
+  stateless                 = false
+
+  tcp_options {
+    destination_port_range {
+      min = "80"
+      max = "80"
+    }
+  }
+}	
+
+
+# Security rules allow TCP 80 ingress controller to pod network TCP 
+resource "oci_core_network_security_group_security_rule" "TCP443_ingress" {
+  network_security_group_id = oci_core_network_security_group.ingress_controller.id
+  description               = "allow 443 to Ingress"
+  direction                 = "INGRESS"
+  protocol                  = "6"
+  source                    = "0.0.0.0/0"
+  source_type               = "CIDR_BLOCK"
+  stateless                 = false
+
+  tcp_options {
+    destination_port_range {
+      min = "443"
+      max = "443"
+    }
+  }
+}	
