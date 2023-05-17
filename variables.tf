@@ -18,7 +18,7 @@ variable "kubernetes_version" {
 
 variable "region" {
     type = string
-    default = "us-sanjose-1"
+    default = "us-ashburn-1"
 }
 
 # Shape of Virtual Nodes
@@ -39,14 +39,14 @@ variable "virtual_node_count" {
 variable "create_IAM_policy" {
   description = "Set to true to create the resource, false to skip it."
   type        = bool
-  default     = false
+  default     = true
 }
 
 # set to true to add metrics server to Virtual Nodes
 variable "deploy_metrics_server" {
   description = "Set to true to create the resource, false to skip it."
   type        = bool
-  default     = true
+  default     = false
 }
 
 

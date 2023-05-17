@@ -50,7 +50,7 @@ resource "oci_core_subnet" "service_lb_subnet" {
 	compartment_id = var.compartment_id
 	display_name = "oke-svclb-subnet"
 	#dns_label = "oke-svclb-subnet"
-	prohibit_public_ip_on_vnic = "true"
+	prohibit_public_ip_on_vnic = "false"
 	route_table_id = "${oci_core_default_route_table.generated_oci_core_default_route_table.id}"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
 }
