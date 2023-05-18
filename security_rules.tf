@@ -50,7 +50,7 @@ resource "oci_core_network_security_group_security_rule" "svc_lb_pod_network_ing
 # Security rules Pod to Pod communication
 resource "oci_core_network_security_group_security_rule" "pod_network_pod_network" {
   network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
-  description               = "Pod to Pod Communication"
+  description               = "Ingress POD--> POD allow all"
   direction                 = "INGRESS"
   protocol                  = "all"
   source                    = oci_core_network_security_group.pod_network_security_group.id
@@ -65,7 +65,7 @@ resource "oci_core_network_security_group_security_rule" "pod_network_pod_networ
 
 resource "oci_core_network_security_group_security_rule" "api_network_pod_network" {
   network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
-  description               = "allow all from Kubernetes API network to POD"
+  description               = "Ingress KubeAPI--> POD allow all"
   direction                 = "INGRESS"
   protocol                  = "all"
   source                    = oci_core_network_security_group.KubeAPI_server_security_group.id
@@ -79,7 +79,7 @@ resource "oci_core_network_security_group_security_rule" "api_network_pod_networ
 
   resource "oci_core_network_security_group_security_rule" "pod_network_egress" {
   network_security_group_id = oci_core_network_security_group.pod_network_security_group.id
-  description               = "allow all outbound traffic in pod network"
+  description               = "Egress Pod-->All IPs  allow all"
   direction                 = "EGRESS"
   protocol                  = "all"
   destination               = "0.0.0.0/0"
@@ -117,7 +117,7 @@ resource "oci_core_network_security_group_security_rule" "virtual_node__network_
 
 resource "oci_core_network_security_group_security_rule" "virtual_node__network_egress_api_server1" {
   network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
-  description               = "allow node network to api server TCP 6443"
+  description               = "Egress Node-->KubeAPI server TCP 6443"
   direction                 = "EGRESS"
   protocol                  = "6"
   destination               = oci_core_network_security_group.KubeAPI_server_security_group.id
@@ -138,7 +138,7 @@ resource "oci_core_network_security_group_security_rule" "virtual_node__network_
 
 resource "oci_core_network_security_group_security_rule" "virtual_node__network_egress_api_server2" {
   network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
-  description               = "allow virtual network egress to  api server keep alive TCP 12250"
+  description               = "Egress Node-->KubeAPI server Keep Alive TCP 12250"
   direction                 = "EGRESS"
   protocol                  = "6"
   destination               = oci_core_network_security_group.KubeAPI_server_security_group.id
@@ -159,7 +159,7 @@ resource "oci_core_network_security_group_security_rule" "virtual_node__network_
 
 resource "oci_core_network_security_group_security_rule" "OCI_Services" {
   network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
-  description               = "allow virtual network all protocols to OCI services"
+  description               = "Egress Node-->OCI services all traffic"
   direction                 = "EGRESS"
   protocol                  = "all"
   destination_type          = "SERVICE_CIDR_BLOCK"
@@ -171,7 +171,7 @@ resource "oci_core_network_security_group_security_rule" "OCI_Services" {
 
 resource "oci_core_network_security_group_security_rule" "virtual_node__network_egress_api_server3" {
   network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
-  description               = "allow virtual network to api server ICMP"
+  description               = "Egress Node-->KubeAPI server ICMP"
   direction                 = "EGRESS"
   protocol                  = "1"
   destination               = oci_core_network_security_group.KubeAPI_server_security_group.id
@@ -185,7 +185,7 @@ resource "oci_core_network_security_group_security_rule" "virtual_node__network_
 
 resource "oci_core_network_security_group_security_rule" "pod_to_virtual_network1" {
   network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
-  description               = "allow Pod Network to Virtual Network keep alive "
+  description               = "Ingress Pod-->Nodes Keep Alive TCP 10250"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = oci_core_network_security_group.pod_network_security_group.id
@@ -206,7 +206,7 @@ tcp_options {
 
 resource "oci_core_network_security_group_security_rule" "api_network_virtual_network1" {
   network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
-  description               = "api server to virtual network keep alive "
+  description               = "Ingress KubeAPI Server -->Nodes Keep Alive TCP 10250"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = oci_core_network_security_group.KubeAPI_server_security_group.id
@@ -225,7 +225,7 @@ tcp_options {
 
 resource "oci_core_network_security_group_security_rule" "api_network_virtual_network_icmp" {
   network_security_group_id = oci_core_network_security_group.virtual_node_network_security_group.id
-  description               = "allow  API Network to virtual network icmp"
+  description               = "allow KubeAPI server to virtual network icmp"
   direction                 = "INGRESS"
   protocol                  = "1"
   source                    = oci_core_network_security_group.KubeAPI_server_security_group.id
@@ -248,7 +248,7 @@ resource "oci_core_network_security_group" "KubeAPI_server_security_group" {
 
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress_TCP_6443" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow all IPs to kube API server ingress on TCP 6443"
+  description               = "allow all IPs to kubeAPI server on TCP 6443"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = "0.0.0.0/0"
@@ -269,7 +269,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
 
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress_TCP_6443_pod" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow pod network to KubeAPI ingress on TCP 6443"
+  description               = "allow pod network to KubeAPI server on TCP 6443"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = oci_core_network_security_group.pod_network_security_group.id
@@ -290,7 +290,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
 
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress_TCP_6443_node" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow virtual network to KubeAPI ingress on TCP 6443"
+  description               = "allow virtual network to KubeAPI server on TCP 6443"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = oci_core_network_security_group.virtual_node_network_security_group.id
@@ -311,7 +311,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
 # Security rules kubeAPI server ingress from pod security group TCP 12250
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_pod_12250" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "pod security group to Kube API server  Keep Alive TCP 12250"
+  description               = "allow pod network to KubeAPI server Keep Alive TCP 12250"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = oci_core_network_security_group.pod_network_security_group.id
