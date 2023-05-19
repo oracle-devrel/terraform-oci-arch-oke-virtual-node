@@ -248,7 +248,7 @@ resource "oci_core_network_security_group" "KubeAPI_server_security_group" {
 
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress_TCP_6443" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow all IPs to kubeAPI server on TCP 6443"
+  description               = "Ingress allow all IPs to kubeAPI server on TCP 6443"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = "0.0.0.0/0"
@@ -290,7 +290,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
 
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress_TCP_6443_node" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow virtual network to KubeAPI server on TCP 6443"
+  description               = "Ingress  virtual network --> KubeAPI server on TCP 6443"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = oci_core_network_security_group.virtual_node_network_security_group.id
@@ -311,7 +311,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
 # Security rules kubeAPI server ingress from pod security group TCP 12250
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_pod_12250" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow pod network to KubeAPI server Keep Alive TCP 12250"
+  description               = " Ingress pod--> KubeAPI server Keep Alive TCP 12250"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = oci_core_network_security_group.pod_network_security_group.id
@@ -330,7 +330,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_pod_122
 # Security rules kubeAPI server ingress from node security group TCP 
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12250" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow node security group TCP 12250"
+  description               = "Ingress node--> KubeAPI server security Keep Alive TCP 12250"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = oci_core_network_security_group.virtual_node_network_security_group.id
@@ -350,7 +350,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12
 # Security rules kubeAPI server ingress from node security group ICMP
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12250_icmp_node" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow node security group ICMP"
+  description               = "Ingress node --> KubeAPI server ICMP"
   direction                 = "INGRESS"
   protocol                  = "1"
   source                    = oci_core_network_security_group.virtual_node_network_security_group.id
@@ -362,7 +362,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12
 # Security rules kubeAPI server ingress from node security group ICMP
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_pod_12250_icmp_pod" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow pod security group ICMP"
+  description               = "Ingress pod --> KubeAPI server ICMP"
   direction                 = "INGRESS"
   protocol                  = "1"
   source                    = oci_core_network_security_group.pod_network_security_group.id
@@ -375,7 +375,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_pod_122
 # Security rules kubeAPI server TO POD NETWORK
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_POD_ALL" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow all to POD Network"
+  description               = "Egress KubeAPI server ---> pod all protocols"
   direction                 = "EGRESS"
   protocol                  = "6"
   destination               = oci_core_network_security_group.pod_network_security_group.id
@@ -388,7 +388,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_POD_ALL
 # Security rules kubeAPI server TO Node NETWORK
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_Node_10250" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow 10250 to Node Network"
+  description               = "Egress allow KubeAPI server--> Node Kubelet TCP 10250"
   direction                 = "EGRESS"
   protocol                  = "6"
   destination               = oci_core_network_security_group.virtual_node_network_security_group.id
@@ -418,7 +418,7 @@ resource "oci_core_network_security_group" "ingress_controller" {
 # Security rules ingress controller to pod network high ports
 resource "oci_core_network_security_group_security_rule" "ingress_to_pod1" {
   network_security_group_id = oci_core_network_security_group.ingress_controller.id
-  description               = "allow 10250 to Node Network"
+  description               = "Egress KubeAPi Server  Node Kubelet TCP 10250"
   direction                 = "EGRESS"
   protocol                  = "6"
   destination               = oci_core_network_security_group.pod_network_security_group.id
@@ -436,7 +436,7 @@ resource "oci_core_network_security_group_security_rule" "ingress_to_pod1" {
 # Security rules ingress controller to pod network TCP 
 resource "oci_core_network_security_group_security_rule" "ingress_to_pod2" {
   network_security_group_id = oci_core_network_security_group.ingress_controller.id
-  description               = "allow 10256 to Node Network"
+  description               = "Egress KubeAPI server to Node Kubeproxy TCP 10256 "
   direction                 = "EGRESS"
   protocol                  = "6"
   destination               = oci_core_network_security_group.pod_network_security_group.id
@@ -455,7 +455,7 @@ resource "oci_core_network_security_group_security_rule" "ingress_to_pod2" {
 # Security rules allow TCP 80 ingress controller to pod network TCP 
 resource "oci_core_network_security_group_security_rule" "TCP80_ingress" {
   network_security_group_id = oci_core_network_security_group.ingress_controller.id
-  description               = "allow TCP 80 to Ingress"
+  description               = "Ingress allow IP to  web TCP 80 to Ingress"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = "0.0.0.0/0"
@@ -474,7 +474,7 @@ resource "oci_core_network_security_group_security_rule" "TCP80_ingress" {
 # Security rules allow TCP 80 ingress controller to pod network TCP 
 resource "oci_core_network_security_group_security_rule" "TCP443_ingress" {
   network_security_group_id = oci_core_network_security_group.ingress_controller.id
-  description               = "allow 443 to Ingress"
+  description               =  "Ingress allow IP to  web TCP 443 to Ingress"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = "0.0.0.0/0"
@@ -493,7 +493,7 @@ resource "oci_core_network_security_group_security_rule" "TCP443_ingress" {
 # Security rules allow TCP 80 ingress controller to pod network TCP 
 resource "oci_core_network_security_group_security_rule" "TCP8080_ingress" {
   network_security_group_id = oci_core_network_security_group.ingress_controller.id
-  description               = "allow 8080 to Ingress"
+  description               = "Ingress allow IP to  web TCP 8080 to Ingress"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = "0.0.0.0/0"
