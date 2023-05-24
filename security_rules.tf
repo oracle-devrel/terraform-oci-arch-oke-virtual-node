@@ -56,6 +56,7 @@ resource "oci_core_network_security_group_security_rule" "pod_network_pod_networ
   source                    = oci_core_network_security_group.pod_network_security_group.id
   source_type               = "NETWORK_SECURITY_GROUP"
   stateless                 = false
+
 }
 
 
@@ -129,10 +130,8 @@ resource "oci_core_network_security_group_security_rule" "virtual_node__network_
         destination_port_range {
             max = "6443"
             min = "6443"
-        }
-
-	}
-
+      }
+	  }
   }
 
 
@@ -150,10 +149,8 @@ resource "oci_core_network_security_group_security_rule" "virtual_node__network_
         destination_port_range {
             max = "12250"
             min = "12250"
-        }
-
-	}
-
+      }
+	  }
   }
 
 
@@ -198,8 +195,7 @@ tcp_options {
         destination_port_range {
             max = "10250"
             min = "10250"
-        }
-
+    }
 	}
 }
 # Security rules Kubernetes API subnet to Virtual Node network TCP 10250
@@ -218,8 +214,7 @@ tcp_options {
         destination_port_range {
             max = "10250"
             min = "10250"
-        }
-
+    }
 	}
 }
 
@@ -231,7 +226,6 @@ resource "oci_core_network_security_group_security_rule" "api_network_virtual_ne
   source                    = oci_core_network_security_group.KubeAPI_server_security_group.id
   source_type               = "NETWORK_SECURITY_GROUP"
   stateless                 = false
-
 
 }
 
@@ -260,8 +254,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
         destination_port_range {
             max = "6443"
             min = "6443"
-        }
-
+    }
 	}
 }	
 
@@ -269,7 +262,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
 
 resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress_TCP_6443_pod" {
   network_security_group_id = oci_core_network_security_group.KubeAPI_server_security_group.id
-  description               = "allow pod network to KubeAPI server on TCP 6443"
+  description               = "Ingress pod network to KubeAPI server on TCP 6443"
   direction                 = "INGRESS"
   protocol                  = "6"
   source                    = oci_core_network_security_group.pod_network_security_group.id
@@ -281,9 +274,8 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
         destination_port_range {
             max = "6443"
             min = "6443"
-        }
-
-	}
+    }
+  }
 }
 
 # Security rules kubeAPI server ingress TCP 6443 from node security group
@@ -302,8 +294,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_ingress
         destination_port_range {
             max = "6443"
             min = "6443"
-        }
-
+    }
 	}
 }
 
@@ -322,8 +313,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_pod_122
         destination_port_range {
             max = "12250"
             min = "12250"
-        }
-
+    }
 	}
 }
 
@@ -341,7 +331,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_node_12
         destination_port_range {
             max = "12250"
             min = "12250"
-        }
+    }
 
 	}
 
@@ -382,7 +372,6 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_POD_ALL
   destination_type           = "NETWORK_SECURITY_GROUP"
   stateless                 = false
 
-
 }
 
 # Security rules kubeAPI server TO Node NETWORK
@@ -400,8 +389,7 @@ resource "oci_core_network_security_group_security_rule" "kubeAPI_server_Node_10
         destination_port_range {
             max = "10250"
             min = "10250"
-        }
-
+    }
 	}
 }
 
@@ -418,7 +406,7 @@ resource "oci_core_network_security_group" "ingress_controller" {
 # Security rules ingress controller to pod network high ports
 resource "oci_core_network_security_group_security_rule" "ingress_to_pod1" {
   network_security_group_id = oci_core_network_security_group.ingress_controller.id
-  description               = "Egress KubeAPi Server  Node Kubelet TCP 10250"
+  description               = "Egress KubeAPI Server  Node Kubelet TCP 10250"
   direction                 = "EGRESS"
   protocol                  = "6"
   destination               = oci_core_network_security_group.pod_network_security_group.id

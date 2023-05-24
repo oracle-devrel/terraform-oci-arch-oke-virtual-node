@@ -4,9 +4,7 @@ data oci_identity_tenancy tenancy {
     tenancy_id = var.tenancy_ocid
 }
 
-locals {
-    region_map = { for r in data.oci_identity_regions.regions.regions : r.key => r.name }
-}
+
 
 # get service ocid for region
 data "oci_core_services" "all_oci_services" {
@@ -30,8 +28,10 @@ data "oci_identity_fault_domains" "fd" {
   availability_domain = data.oci_identity_availability_domains.ad.availability_domains[0].name
 }
 
-# put availability domains in a list
-locals {
-  # Get the list of availability domain names for the region
-  ad_names = [for ad in data.oci_identity_availability_domains.ad.availability_domains : ad.name]
+
+
+data "oci_containerengine_cluster_kube_config" "virtual_cluster_kube_config" {
+    #Required
+    cluster_id = oci_containerengine_cluster.generated_oci_containerengine_cluster.id
+
 }

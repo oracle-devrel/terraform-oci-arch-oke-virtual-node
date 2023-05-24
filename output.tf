@@ -1,16 +1,4 @@
-data "oci_containerengine_cluster_kube_config" "virtual_cluster_kube_config" {
-    #Required
-    cluster_id = oci_containerengine_cluster.generated_oci_containerengine_cluster.id
 
-}
-
-
-/*
-output "kubeconfig" {
-  value = data.oci_containerengine_cluster_kube_config.virtual_cluster_kube_config
-  description = "kubeconfig for virtual node cluster "
-}
-*/
 
 
 
