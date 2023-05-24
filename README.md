@@ -19,6 +19,13 @@ Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.
 
 Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://github.com/chiphwang1/terraform-oci-arch-oke-virtual-node/archive/refs/tags/oke-virtual_nodes-v5.zip)
 
+[
+![Deploy to Oracle Cloud]
+(https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)
+]
+(https://cloud.oracle.com/resourcemanager/stacks/create
+?zipUrl=https://github.com/chiphwang1/terraform-oci-arch-oke-virtual-node/archive/refs/tags/oke-virtual_nodes-v5.zip)
+
 ## Installation of Terraform stack
 
 **1. Clone or download the contents of this repo** 
