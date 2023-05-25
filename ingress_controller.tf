@@ -2,7 +2,7 @@ provider "kubernetes" {
     config_path = "/tmp/kubeconfig"
 }
 
-# wait for /tmp/kubeconfig to be wirtten"
+# wait for /tmp/kubeconfig to be written"
 resource "time_sleep" "wait_1min_demo2" {
   count = var.deploy_ingress_controller ? 1 : 0 
   depends_on = [

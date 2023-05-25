@@ -2,12 +2,12 @@
 # Compartment to deploy OKE Virual Node Cluster
 variable "compartment_id" {
     type = string
-    default = "ocid1.compartment.oc1..aaaaaaaamtrs5i5sm6b4ie2uchhjlu6jxp3oehi5y4b6hp34pqpcffpkdzja"
+    default = ""
 }
 
 variable "tenancy_ocid" {
 type = string
-default = "ocid1.tenancy.oc1..aaaaaaaajznex5attydtrmrgudwayqu7kn4krasw2ct4h4pwz7nwbfxoyd4q"
+default = ""
 }
 
 
@@ -18,7 +18,7 @@ variable "kubernetes_version" {
 
 variable "region" {
     type = string
-    default = "us-phoenix-1"
+    default = ""
 }
 
 # Shape of Virtual Nodes
@@ -62,27 +62,7 @@ variable "deploy_kubernetes_dashboard" {
 variable "deploy_ingress_controller" {
   description = "Set to true to create the resource, false to skip it."
   type        = bool
-  default     = false
+  default     = true
 }
-
-
-# map for services oci_service_gateway for different regions
-variable "oci_service_gateway" {
-  type = map(string)
-  default = {
-    ap-seoul-1 = "all-seo-services-in-oracle-services-network"
-    ap-tokyo-1 = "all-hnd-services-in-oracle-services-network"
-    ca-toronto-1 = "all-yyz-services-in-oracle-services-network"
-    eu-frankfurt-1 = "all-fra-services-in-oracle-services-network"
-    uk-london-1 = "all-lhr-services-in-oracle-services-network"
-    us-ashburn-1 = "all-iad-services-in-oracle-services-network"
-    us-phoenix-1 = "all-phx-services-in-oracle-services-network"
-    us-sanjose-1 = "all-sjc-services-in-oracle-services-network"
-    us-us-chicago-1 = "all-ord-services-in-oracle-services-network"
-    ap-sydney-1 = "all-syd-services-in-oracle-services-network"
-    ap-melbourne-1 = "all-mel-services-in-oracle-services-network"
-  }
-}
-
 
 
