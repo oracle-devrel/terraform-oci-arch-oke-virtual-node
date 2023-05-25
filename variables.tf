@@ -62,7 +62,7 @@ variable "deploy_kubernetes_dashboard" {
 variable "deploy_ingress_controller" {
   description = "Set to true to create the resource, false to skip it."
   type        = bool
-  default     = true
+  default     = false
 }
 
 
