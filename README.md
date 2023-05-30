@@ -23,7 +23,7 @@ This Terraform stack facilitates the deployment of an Oracle Container Engine fo
 
 **1. Clone or download the contents of this repo** 
      
-     git clone https://github.com/chiphwang1/terraform-oci-arch-oke-virtual-node.git
+     git clone https://github.com/oracle-devrel/terraform-oci-arch-oke-virtual-node.git
 
 **2. Change to the directory that holds the Terraform stack** 
 
