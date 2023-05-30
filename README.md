@@ -15,7 +15,7 @@ This Terraform stack facilitates the deployment of an Oracle Container Engine fo
 
 
 
-[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/chiphwang1/terraform-oci-arch-oke-virtual-node/archive/refs/tags/OKE-VN-V7.zip)
+[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://github.com/oracle-devrel/terraform-oci-arch-oke-virtual-node/archive/refs/tags/OKE-VN-V8.zip)
 
 
 
@@ -23,7 +23,7 @@ This Terraform stack facilitates the deployment of an Oracle Container Engine fo
 
 **1. Clone or download the contents of this repo** 
      
-     git clone https://github.com/chiphwang1/oci_oke_virtual_nodes.git
+     git clone https://github.com/chiphwang1/terraform-oci-arch-oke-virtual-node.git
 
 **2. Change to the directory that holds the Terraform stack** 
 
@@ -84,3 +84,5 @@ This Terraform stack facilitates the deployment of an Oracle Container Engine fo
 
 - [OKE Virtual Nodes deliver a serverless Kubernetes experience](https://blogs.oracle.com/cloud-infrastructure/post/oke-virtual-nodes-deliver-serverless-experience)
 - [Oracle Container Engine for Kubernetes(OKE)](https://www.oracle.com/cloud/cloud-native/container-engine-kubernetes/#:~:text=Oracle%20Cloud%20Infrastructure%20Container%20Engine,complexities%20of%20the%20Kubernetes%20infrastructure.)
+- [OKE Virtual Nodes documentation](https://docs.oracle.com/en-us/iaas/Content/ContEng/Concepts/contengoverview.htm)
+- [Get started with Oracle Cloud Infrastructure today with our Oracle Cloud Free Trial](https://www.oracle.com/cloud/free/)
