@@ -15,14 +15,6 @@ This Terraform stack facilitates the deployment of an Oracle Container Engine fo
 
 
 
-
-
-
-
-
-
-
-
 [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-devrel/terraform-oci-arch-oke-virtual-node/archive/refs/tags/OKE-VN-V8.zip)
 
 
@@ -34,7 +26,7 @@ This Terraform stack facilitates the deployment of an Oracle Container Engine fo
 
 **2. Change to the directory that holds the Terraform stack** 
 
-      cd ./oci_oke_virtual_nodes
+      cd ./terraform-oci-arch-oke-virtual-node
 
 **3. Populate the varaibles.tf file**
 
