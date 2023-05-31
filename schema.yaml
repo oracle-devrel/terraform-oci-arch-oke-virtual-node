@@ -1,5 +1,5 @@
-title: "OKE Virtual Node Demo Stack"
-stackDescription: "OKE Virtual Node Stack"
+title: "OKE_cluster_with_virtual_nodes"
+stackDescription: " OKE cluster with virtual nodes"
 schemaVersion: 1.1.0
 version: "20200301"
 locale: “en"
@@ -15,7 +15,7 @@ variableGroups:
       - "pod_shape"
       - "virtual_node_count"
       - "kubernetes_version"
-    - title: "OKE Add-ons"
+    - title: "Standard Deployments"
       variables:
       - "deploy_metrics_server"
       - "deploy_ingress_controller"

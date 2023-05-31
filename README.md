@@ -14,13 +14,16 @@ This Terraform stack facilitates the deployment of an Oracle Container Engine fo
 - [Terraform Installed](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
 
-Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?region=home&zipUrl=https://github.com/chiphwang1/terraform-oci-arch-oke-virtual-node/archive/refs/tags/v2.zip)
+
+[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://github.com/oracle-devrel/terraform-oci-arch-oke-virtual-node/archive/refs/tags/OKE-VN-V8.zip)
+
+
 
 ## Installation of Terraform stack
 
 **1. Clone or download the contents of this repo** 
      
-     git clone https://github.com/chiphwang1/oci_oke_virtual_nodes.git
+     git clone https://github.com/oracle-devrel/terraform-oci-arch-oke-virtual-node.git
 
 **2. Change to the directory that holds the Terraform stack** 
 
@@ -56,7 +59,7 @@ Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.
 | Variables                          | Description                                                         | Type   | Mandatory |
 | ---------------------------------- | ------------------------------------------------------------------- | ------ | --------- |
 | `compartment_id` | Compartment to deploy OKE Virtual Nodes cluster | string | yes  |
-| `tenancy_ocid` | Customer's tenancy ocid| string | yes  |
+| `tenancy_ocid` | Tenancy ocid| string | yes  |
 | `region` | region to deploy the OKE Virtual Nodes Cluster  | string | yes     |
 | `pod_shape` | The shape of Virtual Nodes | string | yes       |
 | `virtual_node_count` | The number of Virtual Nodes in the node pool  | number | yes       |
@@ -75,9 +78,11 @@ Click [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.
 
 **1. Get IP address of Nginx ingress controller**
 
-     kubectl -n default get svc ingress-nginx
+     kubectl -n ingress-nginx get svc ingress-nginx-controller
 
 ## Additional Resources
 
 - [OKE Virtual Nodes deliver a serverless Kubernetes experience](https://blogs.oracle.com/cloud-infrastructure/post/oke-virtual-nodes-deliver-serverless-experience)
 - [Oracle Container Engine for Kubernetes(OKE)](https://www.oracle.com/cloud/cloud-native/container-engine-kubernetes/#:~:text=Oracle%20Cloud%20Infrastructure%20Container%20Engine,complexities%20of%20the%20Kubernetes%20infrastructure.)
+- [OKE Virtual Nodes documentation](https://docs.oracle.com/en-us/iaas/Content/ContEng/Concepts/contengoverview.htm)
+- [Get started with Oracle Cloud Infrastructure today with our Oracle Cloud Free Trial](https://www.oracle.com/cloud/free/)
