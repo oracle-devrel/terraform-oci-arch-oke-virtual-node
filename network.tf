@@ -53,6 +53,7 @@ resource "oci_core_subnet" "service_lb_subnet" {
 	prohibit_public_ip_on_vnic = "false"
 	route_table_id = "${oci_core_default_route_table.generated_oci_core_default_route_table.id}"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
+	security_list_ids = ["${oci_core_security_list.service_lb_sec_list.id}"]
 }
 
 resource "oci_core_subnet" "node_subnet" {
@@ -63,6 +64,7 @@ resource "oci_core_subnet" "node_subnet" {
 	prohibit_public_ip_on_vnic = "true"
 	route_table_id = "${oci_core_route_table.generated_oci_core_route_table.id}"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
+	security_list_ids = ["${oci_core_security_list.node_sec_list.id}"]
 }
 
 resource "oci_core_subnet" "pod_subnet" {
@@ -73,6 +75,7 @@ resource "oci_core_subnet" "pod_subnet" {
 	prohibit_public_ip_on_vnic = "true"
 	route_table_id = "${oci_core_route_table.generated_oci_core_route_table.id}"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
+	security_list_ids = ["${oci_core_security_list.pod_subnet_sec_list.id}"]
 }
 
 
@@ -83,6 +86,7 @@ resource "oci_core_subnet" "kubernetes_api_endpoint_subnet" {
 	prohibit_public_ip_on_vnic = "false"
 	route_table_id = "${oci_core_default_route_table.generated_oci_core_default_route_table.id}"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
+	security_list_ids = ["${oci_core_security_list.API_subnet_sec_list.id}"]
 }
 
 resource "oci_core_default_route_table" "generated_oci_core_default_route_table" {
