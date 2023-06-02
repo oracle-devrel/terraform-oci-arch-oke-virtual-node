@@ -1,11 +1,12 @@
 # LB subnet Security list
+
 resource "oci_core_security_list" "service_lb_sec_list" {
 	compartment_id = var.compartment_id
-	display_name = "oke_virtual_node_LB_sec_list"
+	display_name = "svc_LB_sec_list"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
     egress_security_rules {
 		description = "Egress pod subnet High Ports"
-		destination = data.oci_core_subnet.pod_subnet.cidr_block
+		destination = "10.0.11.0/24"
 		destination_type = "CIDR_BLOCK"
 		protocol = "6"
 		stateless = "false"
@@ -18,7 +19,7 @@ resource "oci_core_security_list" "service_lb_sec_list" {
 
      egress_security_rules {
 		description = "Egress pod subnet KubeProxy"
-		destination = data.oci_core_subnet.pod_subnet.cidr_block
+		destination = "10.0.11.0/24"
 		destination_type = "CIDR_BLOCK"
 		protocol = "6"
 		stateless = "false"
@@ -32,7 +33,7 @@ resource "oci_core_security_list" "service_lb_sec_list" {
 
     ingress_security_rules {
 		description = "ingress TCP 80"
-		source = "0.0.0.0"
+		source = "0.0.0.0/0"
 		source_type = "CIDR_BLOCK"
 		protocol = "6"
 		stateless = "false"
@@ -45,7 +46,7 @@ resource "oci_core_security_list" "service_lb_sec_list" {
 
     ingress_security_rules {
 		description = "ingress TCP 8080"
-		source = "0.0.0.0"
+		source = "0.0.0.0/0"
 		source_type = "CIDR_BLOCK"
 		protocol = "6"
 		stateless = "false"
@@ -58,7 +59,7 @@ resource "oci_core_security_list" "service_lb_sec_list" {
 
 ingress_security_rules {
 		description = "ingress TCP 443"
-		source = "0.0.0.0"
+		source = "0.0.0.0/0"
 		source_type = "CIDR_BLOCK"
 		protocol = "6"
 		stateless = "false"
@@ -68,17 +69,19 @@ ingress_security_rules {
             
 	    }
     }
+}
+
 
 
 # Pod subnet Security list
 
 resource "oci_core_security_list" "pod_subnet_sec_list" {
 	compartment_id = var.compartment_id
-	display_name = "oke_pod_subnet_sec_list"
+	display_name = "pod_subnet_sec_list"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
     ingress_security_rules {
 		description = "Ingress LB-->POD TCP Highport Access"
-		source = data.oci_core_subnet.service_lb_subnet.cidr_block
+		source = "10.0.20.0/24"
 		source_type = "CIDR_BLOCK"
 		protocol = "6"
 		stateless = "false"
@@ -90,7 +93,7 @@ resource "oci_core_security_list" "pod_subnet_sec_list" {
     
     ingress_security_rules {
 		description = "Ingress LB-->POD KubeProxy"
-		source = data.oci_core_subnet.service_lb_subnet.cidr_block
+		source = "10.0.20.0/24"
 		source_type = "CIDR_BLOCK"
 		protocol = "6"
 		stateless = "false"
@@ -102,7 +105,7 @@ resource "oci_core_security_list" "pod_subnet_sec_list" {
 
     ingress_security_rules {
 		description = "POD-->POD"
-		source = data.oci_core_subnet.pod_subnet.cidr_block
+		source = "10.0.11.0/24"
 		source_type = "CIDR_BLOCK"
 		protocol = "all"
 		stateless = "false"
@@ -111,7 +114,7 @@ resource "oci_core_security_list" "pod_subnet_sec_list" {
     
     ingress_security_rules {
 		description = "Ingress KubeAPI -->POD All"
-		source = data.oci_core_subnet.kubernetes_api_endpoint_subnet.cidr_block
+		source = "10.0.3.0/24"
 		source_type = "CIDR_BLOCK"
 		protocol = "all"
 		stateless = "false"
@@ -123,7 +126,7 @@ resource "oci_core_security_list" "pod_subnet_sec_list" {
 		description = "Allow All"
 		destination = "0.0.0.0/0"
 		destination_type = "CIDR_BLOCK"
-		protocol = All
+		protocol = "all"
 		stateless = "false"
 
     }
@@ -133,11 +136,11 @@ resource "oci_core_security_list" "pod_subnet_sec_list" {
 
 resource "oci_core_security_list" "node_subnet_sec_list" {
 	compartment_id = var.compartment_id
-	display_name = "oke_node_subnet_sec_list"
+	display_name = "virtual_node_subnet_sec_list"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
      egress_security_rules {
 		description = "Egress Kube API server TCP 6443"
-		destination = data.oci_core_subnet.kubernetes_api_endpoint_subnet.cidr_block
+		destination = "10.0.3.0/24"
 		destination_type = "CIDR_BLOCK"
 		protocol = 6
 		stateless = "false"
@@ -149,8 +152,8 @@ resource "oci_core_security_list" "node_subnet_sec_list" {
     }
 
     egress_security_rules {
-		description = "Egress Kube API server TCP 6443"
-		destination = data.oci_core_subnet.kubernetes_api_endpoint_subnet.cidr_block
+		description = "Egress Kube API server TCP 12250"
+		destination = "10.0.3.0/24"
 		destination_type = "CIDR_BLOCK"
 		protocol = 6
 		stateless = "false"
@@ -172,7 +175,7 @@ resource "oci_core_security_list" "node_subnet_sec_list" {
 
      egress_security_rules {
 		description = "Egress ICMP to Kube API server"
-		destination = lookup(data.oci_core_services.all_oci_services.services[0], "cidr_block") 
+		destination = "10.0.3.0/24"
 		destination_type = "CIDR_BLOCK"
 		protocol = "1"
 		stateless = "false"
@@ -180,8 +183,20 @@ resource "oci_core_security_list" "node_subnet_sec_list" {
 
     
     ingress_security_rules {
-		description = "Ingress Pod-->Nodes Keep Alove"
-		source = data.oci_core_subnet.pod_subnet.cidr_block
+		description = "Ingress Pod-->Nodes Keep Alive"
+		source = "10.0.11.0/24"
+		source_type = "CIDR_BLOCK"
+		protocol = "6"
+		stateless = "false"
+        tcp_options {
+            max = "10250"
+            min = "10250"
+	    }
+	}
+	
+    ingress_security_rules {
+		description = "Ingress Kube API -->Nodes Keep Alive"
+		source = "10.0.3.0/24"
 		source_type = "CIDR_BLOCK"
 		protocol = "6"
 		stateless = "false"
@@ -194,20 +209,7 @@ resource "oci_core_security_list" "node_subnet_sec_list" {
 
     ingress_security_rules {
 		description = "Ingress Kube API -->Nodes Keep Alive"
-		source = data.oci_core_subnet.kubernetes_api_endpoint_subnet.cidr_block
-		source_type = "CIDR_BLOCK"
-		protocol = "6"
-		stateless = "false"
-        tcp_options {
-            max = "10250"
-            min = "10250"
-	    }
-    }
-
-
-    ingress_security_rules {
-		description = "Ingress Kube API -->Nodes Keep Alive"
-		source = data.oci_core_subnet.kubernetes_api_endpoint_subnet.cidr_block
+		source = "10.0.3.0/24"
 		source_type = "CIDR_BLOCK"
 		protocol = "1"
 		stateless = "false"
@@ -218,11 +220,9 @@ resource "oci_core_security_list" "node_subnet_sec_list" {
 
 # API Server subnet Security list
 
-
-
 resource "oci_core_security_list" "API_subnet_sec_list" {
 	compartment_id = var.compartment_id
-	display_name = "oke_node_subnet_sec_list"
+	display_name = "K8sApi_server_subnet_sec_list"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
     
      ingress_security_rules {
@@ -239,7 +239,7 @@ resource "oci_core_security_list" "API_subnet_sec_list" {
 
     ingress_security_rules {
 		description = "Ingress Pod --> Kube API Keep Alive"
-		source = data.oci_core_subnet.pod_subnet.cidr_block
+		source = "10.0.11.0/24"
 		source_type = "CIDR_BLOCK"
 		protocol = "6"
 		stateless = "false"
@@ -251,7 +251,7 @@ resource "oci_core_security_list" "API_subnet_sec_list" {
 
     ingress_security_rules {
 		description = "Ingress Node subnet --> Kube API Keep Alive"
-		source = data.oci_core_subnet.node_subnet.cidr_block
+		source = "10.0.10.0/24"
 		source_type = "CIDR_BLOCK"
 		protocol = "6"
 		stateless = "false"
@@ -263,7 +263,7 @@ resource "oci_core_security_list" "API_subnet_sec_list" {
 
     ingress_security_rules {
 		description = "Ingress Node subnet --> Kube API ICMP"
-		source = data.oci_core_subnet.node_subnet.cidr_block
+		source = "10.0.10.0/24"
 		source_type = "CIDR_BLOCK"
 		protocol = "1"
 		stateless = "false"
@@ -272,7 +272,7 @@ resource "oci_core_security_list" "API_subnet_sec_list" {
 
     ingress_security_rules {
 		description = "Ingress pod subnet --> Kube API ICMP"
-		source = data.oci_core_subnet.pod_subnet.cidr_block
+		source = "10.0.11.0/24"
 		source_type = "CIDR_BLOCK"
 		protocol = "1"
 		stateless = "false"
@@ -282,7 +282,7 @@ resource "oci_core_security_list" "API_subnet_sec_list" {
           
      egress_security_rules {
 		description = "Egress Kube API Pod subnet all"
-		destination = data.oci_core_subnet.pod_subnet.cidr_block
+		destination = "10.0.11.0/24"
 		destination_type = "CIDR_BLOCK"
 		protocol = "all"
 		stateless = "false"
@@ -290,11 +290,42 @@ resource "oci_core_security_list" "API_subnet_sec_list" {
 
     }
 
-    egress_security_rules {
-		description = "Egress Kube API Node subnet Kubelet"
-		destination = data.oci_core_subnet.node_subnet.cidr_block
+	egress_security_rules {
+		description = "Egress Kube API all"
+		destination = "0.0.0.0/0"
 		destination_type = "CIDR_BLOCK"
 		protocol = "all"
+		stateless = "false"
+        
+
+    }
+
+/*
+	egress_security_rules {
+		description = "Egress Kube API node subnet all"
+		destination = "10.0.10.0/24"
+		destination_type = "CIDR_BLOCK"
+		protocol = "all"
+		stateless = "false"
+        
+
+    }
+*/
+	egress_security_rules {
+		description = "Egress Kube API Node subnet ICMP"
+		destination = "10.0.10.0/24"
+		destination_type = "CIDR_BLOCK"
+		protocol = "1"
+		stateless = "false"
+        
+
+    }
+
+    egress_security_rules {
+		description = "Egress Kube API Node subnet Kubelet"
+		destination = "10.0.10.0/24"
+		destination_type = "CIDR_BLOCK"
+		protocol = "6"
 		stateless = "false"
         tcp_options {
             max = "10250"
