@@ -2,7 +2,7 @@
 
 resource "oci_core_security_list" "service_lb_sec_list" {
 	compartment_id = var.compartment_id
-	display_name = "svc_LB_sec_list"
+	display_name = "svc-lb-subnet-sec-list"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
     egress_security_rules {
 		description = "Egress pod subnet High Ports"
@@ -77,7 +77,7 @@ ingress_security_rules {
 
 resource "oci_core_security_list" "pod_subnet_sec_list" {
 	compartment_id = var.compartment_id
-	display_name = "pod_subnet_sec_list"
+	display_name = "pod-subnet-sec-list"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
     ingress_security_rules {
 		description = "Ingress LB-->POD TCP Highport Access"
@@ -136,7 +136,7 @@ resource "oci_core_security_list" "pod_subnet_sec_list" {
 
 resource "oci_core_security_list" "node_subnet_sec_list" {
 	compartment_id = var.compartment_id
-	display_name = "virtual_node_subnet_sec_list"
+	display_name = "virtual-node-subnet-sec-list"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
      egress_security_rules {
 		description = "Egress Kube API server TCP 6443"
@@ -222,7 +222,7 @@ resource "oci_core_security_list" "node_subnet_sec_list" {
 
 resource "oci_core_security_list" "API_subnet_sec_list" {
 	compartment_id = var.compartment_id
-	display_name = "K8sApi_server_subnet_sec_list"
+	display_name = "k8sApi-server-subnet-sec-list"
 	vcn_id = "${oci_core_vcn.generated_oci_core_vcn.id}"
     
      ingress_security_rules {
@@ -300,17 +300,7 @@ resource "oci_core_security_list" "API_subnet_sec_list" {
 
     }
 
-/*
-	egress_security_rules {
-		description = "Egress Kube API node subnet all"
-		destination = "10.0.10.0/24"
-		destination_type = "CIDR_BLOCK"
-		protocol = "all"
-		stateless = "false"
-        
 
-    }
-*/
 	egress_security_rules {
 		description = "Egress Kube API Node subnet ICMP"
 		destination = "10.0.10.0/24"
