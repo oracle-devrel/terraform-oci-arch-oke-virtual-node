@@ -16,9 +16,6 @@ This Terraform stack facilitates the deployment of an Oracle Container Engine fo
 
 
 
-[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://github.com/oracle-devrel/terraform-oci-arch-oke-virtual-node/archive/refs/tags/terraform-virtual-nodes-security-list-v5.zip)
-
-
 [![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/oracle-devrel/terraform-oci-arch-oke-virtual-node/archive/refs/tags/terraform-virtual-nodes-security-list-v5.zip)
 
 ## Installation of Terraform stack
